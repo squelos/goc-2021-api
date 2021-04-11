@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/SnapZen/obj
+/SnapZen/bin/Debug/net5.0
+/Services/bin/Debug
+/Services/obj

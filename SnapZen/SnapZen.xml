@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SnapZen</name>
+    </assembly>
+    <members>
+        <member name="M:SnapZen.Controllers.ConnectionController.FirstConnect(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SnapZen.Controllers.ConnectionController.getSessionId">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SnapZen.Controllers.ConnectionController.InputSessionId(SnapZen.Models.User,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="user"></param>
+            <param name="sessionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SnapZen.Controllers.DiscussionController.pushImage(SnapZen.Models.ImageInput)">
+            <summary>
+            
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="T:NamedPipeSignaler.NamedPipeSignaler">
+            <summary>
+            Simple WebRTC signaler based on named pipes.
+            Allows automatic remote peer discovery on localhost, provided that the pipe
+            name is unique for each peer pair.
+            Remote connection (non-localhost) is not supported.
+            </summary>
+            <remarks>
+            This is a simple implementation for debugging and testing; this is not a production-ready solution.
+            </remarks>
+        </member>
+        <member name="P:NamedPipeSignaler.NamedPipeSignaler.PeerConnection">
+            <summary>
+            Peer connection this signaler is associated with.
+            </summary>
+        </member>
+        <member name="P:NamedPipeSignaler.NamedPipeSignaler.IsClient">
+            <summary>
+            Is this signaler acting as a client for the forward pipe (the pipe whose name is specified
+            in <see cref="M:NamedPipeSignaler.NamedPipeSignaler.#ctor(Microsoft.MixedReality.WebRTC.PeerConnection,System.String)"/>)?
+            </summary>
+            <remarks>
+            The signaler always has a reverse pipe with reversed roles, to allow bidirectional message
+            transport. This is mainly used for debugging and/or to disambiguate two peer connections when
+            automatically connecting to each other, since <see cref="M:Microsoft.MixedReality.WebRTC.PeerConnection.CreateOffer"/> must
+            be called by a single peer only.
+            </remarks>
+        </member>
+        <member name="F:NamedPipeSignaler.NamedPipeSignaler.IceCandidateReceived">
+            <summary>
+            Event invoked when an ICE candidate message has been received from the remote peer's signaler.
+            </summary>
+        </member>
+        <member name="F:NamedPipeSignaler.NamedPipeSignaler.SdpMessageReceived">
+            <summary>
+            Event invoked when an SDP offer or answer message has been received from the remote peer's signaler.
+            </summary>
+        </member>
+        <member name="F:NamedPipeSignaler.NamedPipeSignaler._clientPipe">
+            <summary>
+            Client pipe for sending data. This is connected to the remote signaler's server pipe. 
+            </summary>
+        </member>
+        <member name="F:NamedPipeSignaler.NamedPipeSignaler._serverPipe">
+            <summary>
+            Server pipe for receiving data. This is connected to the remote signaler's client pipe. 
+            </summary>
+        </member>
+        <member name="F:NamedPipeSignaler.NamedPipeSignaler._basePipeName">
+            <summary>
+            Base pipe name for the forward pipe. The reverse pipe has an extra "_r" suffix.
+            </summary>
+        </member>
+        <member name="F:NamedPipeSignaler.NamedPipeSignaler._sendStream">
+            <summary>
+            Write stream wrapping the client pipe, for writing outgoing messages.
+            </summary>
+        </member>
+        <member name="F:NamedPipeSignaler.NamedPipeSignaler._recvStream">
+            <summary>
+            Read stream wrapping the server pipe, for reading incoming messages.
+            </summary>
+        </member>
+        <member name="F:NamedPipeSignaler.NamedPipeSignaler._serverName">
+            <summary>
+            The server name is always localhost; remote connection is not supported.
+            Remote connection would require 2 server names, one for each peer, since
+            they both have a pipe server and a pipe client. Or refactor this pattern.
+            </summary>
+        </member>
+        <member name="F:NamedPipeSignaler.NamedPipeSignaler._outgoingMessages">
+            <summary>
+            Thread-safe collection of outgoing message, with automatic blocking read.
+            </summary>
+        </member>
+        <member name="M:NamedPipeSignaler.NamedPipeSignaler.#ctor(Microsoft.MixedReality.WebRTC.PeerConnection,System.String)">
+            <summary>
+            Construct a signaler instance for the given peer connection, with an explicit pipe name.
+            </summary>
+            <param name="peerConnection">The peer connection to act as a signaler for. This instance
+            will subscribe to the <see cref="E:Microsoft.MixedReality.WebRTC.PeerConnection.LocalSdpReadytoSend"/> and
+            <see cref="E:Microsoft.MixedReality.WebRTC.PeerConnection.IceCandidateReadytoSend"/> events to manage outgoing signaling messages.</param>
+            <param name="pipeName">The unique pipe name shared by the local and remote peers.</param>
+        </member>
+        <member name="M:NamedPipeSignaler.NamedPipeSignaler.StartAsync">
+            <summary>
+            Start the signaler background tasks and connect to the remote signaler.
+            </summary>
+            <returns>Asynchronous task completed once the local and remote signalers
+            are connected with each other, and the background reading and writing tasks
+            are running and ready to process incoming and outgoing messages.</returns>
+        </member>
+        <member name="M:NamedPipeSignaler.NamedPipeSignaler.Stop">
+            <summary>
+            Stop the signaler background tasks, and dispose of all native resources.
+            </summary>
+        </member>
+        <member name="M:NamedPipeSignaler.NamedPipeSignaler.ProcessIncomingMessages">
+            <summary>
+            Entry point for the reading task which read incoming messages from the
+            receiving pipe and dispatch them through events to the WebRTC peer.
+            </summary>
+        </member>
+        <member name="M:NamedPipeSignaler.NamedPipeSignaler.WriteOutgoingMessages">
+            <summary>
+            Entry point for the writing task dequeuing outgoing messages and
+            writing them to the sending pipe.
+            </summary>
+        </member>
+        <member name="M:NamedPipeSignaler.NamedPipeSignaler.SendMessage(System.String)">
+            <summary>
+            Send a message to the remote signaler.
+            </summary>
+            <param name="msg">The message to send.</param>
+        </member>
+    </members>
+</doc>
