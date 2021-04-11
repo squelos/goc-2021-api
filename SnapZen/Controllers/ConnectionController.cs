@@ -67,14 +67,28 @@ namespace SnapZen.Controllers
         /// <summary>
         /// 
         /// </summary>
+        /// <returns></returns>
+        [HttpPost("storeSDPInfo")]
+        public async Task<Session> storeSDPInfo(Session session)
+        {
+            var randomizer = new Random();
+            var sessionId = randomizer.Next(1000000);
+            _cache.Set("spdInfo" + DateTime.Now.ToShortDateString().ToString() + sessionId, session, DateTime.Now.AddSeconds(300));
+            return session;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="user"></param>
         /// <param name="sessionId"></param>
         /// <returns></returns>
         [HttpPost("inputSessionId")]
-        public async Task<SessionGuid> InputSessionId(User user, int sessionId)
+        public async Task<Session> InputSessionId(User user, int sessionId)
         {
             var config = this.Configuration.GetSection("Key")["containerName"];
             var session = new SessionGuid();
+            var sessionInfo = new Session();
             try
             {
                 var data = _cache.Get("tempSession" + DateTime.Now.ToShortDateString().ToString() + sessionId);
@@ -84,13 +98,15 @@ namespace SnapZen.Controllers
                 session.SessionId = Guid.NewGuid();
                 var fileName = user.Id + "/" + user.Id + "-" + session.SessionId + "/" + DateTime.Now.ToFileTime().ToString() + ".json";
                 await blobService.UploadFileBlob(fileName, user, config);
+
+                sessionInfo = (Session)(_cache.Get("spdInfo" + DateTime.Now.ToShortDateString().ToString() + sessionId));
             }
             catch(Exception ex)
             {
                 _logger.LogError(ex.Message);
             }
 
-            return session;
+            return sessionInfo;
 
         }
 

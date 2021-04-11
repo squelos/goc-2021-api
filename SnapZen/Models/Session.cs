@@ -8,5 +8,7 @@ namespace SnapZen.Models
     public class Session
     {
         public int SessionId { get; set; }
+
+        public string SDP { get; set; }
     }
 }

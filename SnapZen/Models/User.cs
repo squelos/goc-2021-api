@@ -9,5 +9,7 @@ namespace SnapZen.Models
     {
         public Guid Id { get; set; }
         public string DisplayName { get; set; }
+
+        public Session? session { get; set; }
     }
 }
